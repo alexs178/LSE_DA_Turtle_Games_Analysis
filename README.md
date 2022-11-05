@@ -1,2 +1,8 @@
 # LSE_DA_Turtle_Games_Analysis
 This repository contains all project files relevant to analysing Turtle Games.
+
+Turtle Games wishes to improve sales performance. To achieve this, I will analyse their datasets to recommend how to utilise customer trends to increase sales.
+
+After importing necessary libraries, I imported ‘turtle_reviews.csv’ into a DataFrame ‘reviews’. I confirmed no missing values were present. I dropped and renamed several columns to improve clarity.
+
+To determine how customers accumulate loyalty_points, I defined the dependent variable y as loyalty_points, and the independent variables x1-x3 as spending_score, remuneration and age. I created 3 OLS models of y against each x, and printed each model’s summary to obtain OLS regression results. Using each model summary’s coefficients, I created 3 linear regression models of predicted loyalty_points for each x. I created 3 scatterplots to visualise loyalty_points against each x, alongside their respective regression lines (see Appendix Fig. 1-3). The coefficient on age had a p-value above 0.05, meaning the null hypothesis that age’s coefficient equals 0 is not rejected at 5% significance level. Fig. 3 confirms no relationship between age and loyalty_points. The p-values for spending_score and remuneration coefficients were statistically significant: ceteris paribus, a 1-unit increase in spending_score and £1k increase in remuneration leads to a 33.0617 and 34.1878 increase in loyalty_points respectively. Fig. 1-2 confirm initially there’s a linear relationship between loyalty_points and both spending_score and remuneration. However, for spending_scores above 60 and remuneration above £50k, there doesn’t appear to be any relationship with loyalty_points.
