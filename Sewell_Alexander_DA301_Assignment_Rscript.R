@@ -70,7 +70,6 @@ head(sales)
 
 # View the descriptive statistics.
 summary(sales)
-
 ################################################################################
 
 # 2. Review plots to determine insights into the data set.
@@ -179,13 +178,15 @@ qplot(Global_Sales, Platform, data=sales, geom='boxplot',
 # 1. Load and explore the data
 
 # View data frame created in Week 4.
-
+View(sales)
 
 # Check output: Determine the min, max, and mean values.
-
+apply(select(sales, NA_Sales, EU_Sales, Global_Sales), 2, min)
+apply(select(sales, NA_Sales, EU_Sales, Global_Sales), 2, max)
+apply(select(sales, NA_Sales, EU_Sales, Global_Sales), 2, mean)
 
 # View the descriptive statistics.
-
+summary(sales)
 
 ###############################################################################
 
@@ -193,24 +194,122 @@ qplot(Global_Sales, Platform, data=sales, geom='boxplot',
 
 ## 2a) Use the group_by and aggregate functions.
 # Group data based on Product and determine the sum per Product.
-
-
+sales2 <- sales %>% group_by(Product) %>% 
+  summarise(sum_NA_Sales=sum(NA_Sales), 
+            sum_EU_Sales=sum(EU_Sales), 
+            sum_Global_Sales=sum(Global_Sales), 
+            .groups='drop')
 # View the data frame.
-
+View(sales2)
 
 # Explore the data frame.
-
+summary(sales2)
 
 
 ## 2b) Determine which plot is the best to compare game sales.
 # Create scatterplots.
+ggplot(data = sales2,
+       mapping = aes(x = Product, y = sum_NA_Sales)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  geom_smooth(se = FALSE, size = 1.5) + 
+  labs(title = "North American Sales per Product",
+       x = "Product Code",
+       y = "North American Sales (£m)") +
+  
+  # Add a theme layer. 
+  theme_bw()
 
+ggplot(data = sales2,
+       mapping = aes(x = Product, y = sum_EU_Sales)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  geom_smooth(se = FALSE, size = 1.5) + 
+  labs(title = "European Sales per Product",
+       x = "Product Code",
+       y = "European Sales (£m)") +
+  
+  # Add a theme layer. 
+  theme_bw()
+
+ggplot(data = sales2,
+       mapping = aes(x = Product, y = sum_Global_Sales)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  geom_smooth(se = FALSE, size = 1.5) + 
+  labs(title = "Global Sales per Product",
+       x = "Product Code",
+       y = "Global Sales (£m)") +
+  
+  # Add a theme layer. 
+  theme_bw()
 
 # Create histograms.
+ggplot(sales2, aes(x = sum_NA_Sales)) +
+  # Add fill, colour, and a statistic.
+  geom_histogram(fill = 'red', color = 'black', bins=20) + 
+  # Add the labs function for labels.
+  labs(x = "North American Sales (£m)",
+       y = "Number of Products",
+       title = "Distribution of North American Sales") 
 
+ggplot(sales2, aes(x = sum_EU_Sales)) +
+  # Add fill, colour, and a statistic.
+  geom_histogram(fill = 'blue', color = 'black', bins=20) + 
+  # Add the labs function for labels.
+  labs(x = "European Sales (£m)",
+       y = "Number of Products",
+       title = "Distribution of European Sales") 
+
+ggplot(sales2, aes(x = sum_Global_Sales)) +
+  # Add fill, colour, and a statistic.
+  geom_histogram(fill = 'green', color = 'black', bins=20) + 
+  # Add the labs function for labels.
+  labs(x = "Global Sales (£m)",
+       y = "Number of Products",
+       title = "Distribution of Global Sales") 
+
+ggplot(sales,
+       # Specify 'y' to create a percentage. 
+       aes(x = Platform, y = ..count../sum(..count..))) +  
+  # Specify attributes.
+  geom_histogram(fill = 'yellow', color = 'black', stat = 'count') +
+  # Specify titles.
+  labs(x = "Platform",
+       y = "Percent",
+       title = "Products by Platform") +  
+  # Pass labels to the scale.
+  scale_y_continuous(label = scales::percent) +
+  # Flip the x-axis and y-axis.
+  coord_flip()  
 
 # Create boxplots.
+ggplot(sales, aes(x = NA_Sales, y = Platform)) +
+  # Specify the geom_boxplot function.
+  geom_boxplot(fill = 'red', outlier.color = 'red') +
+  # Specify the titles.
+  labs(title = "North American Sales by Platform", 
+       x = "North American Sales (£m)", 
+       y = "Platform") +  
+  # Add a 'minimal' theme.
+  theme_minimal()  
 
+ggplot(sales, aes(x = EU_Sales, y = Platform)) +
+  # Specify the geom_boxplot function.
+  geom_boxplot(fill = 'green', outlier.color = 'green') +
+  # Specify the titles.
+  labs(title = "European Sales by Platform", 
+       x = "European Sales (£m)", 
+       y = "Platform") +  
+  # Add a 'minimal' theme.
+  theme_minimal()  
+
+ggplot(sales, aes(x = Global_Sales, y = Platform)) +
+  # Specify the geom_boxplot function.
+  geom_boxplot(fill = 'orange', outlier.color = 'orange') +
+  # Specify the titles.
+  labs(title = "Global Sales by Platform", 
+       x = "Global Sales (£m)", 
+       y = "Platform") +  
+  # Add a 'minimal' theme.
+  theme_minimal()  
 
 ###############################################################################
 
@@ -219,25 +318,41 @@ qplot(Global_Sales, Platform, data=sales, geom='boxplot',
 
 ## 3a) Create Q-Q Plots
 # Create Q-Q Plots.
+qqnorm(sales2$sum_NA_Sales)
+qqline(sales2$sum_NA_Sales)
 
+qqnorm(sales2$sum_EU_Sales)
+qqline(sales2$sum_EU_Sales)
 
+qqnorm(sales2$sum_Global_Sales)
+qqline(sales2$sum_Global_Sales)
 
 ## 3b) Perform Shapiro-Wilk test
 # Install and import Moments.
-
+library(moments)
 
 # Perform Shapiro-Wilk test.
-
-
+shapiro.test(sales2$sum_NA_Sales)
+shapiro.test(sales2$sum_EU_Sales)
+shapiro.test(sales2$sum_Global_Sales)
 
 ## 3c) Determine Skewness and Kurtosis
 # Skewness and Kurtosis.
+skewness(sales2$sum_NA_Sales)
+kurtosis(sales2$sum_NA_Sales)
 
+skewness(sales2$sum_EU_Sales)
+kurtosis(sales2$sum_EU_Sales)
+
+skewness(sales2$sum_Global_Sales)
+kurtosis(sales2$sum_Global_Sales)
 
 
 ## 3d) Determine correlation
 # Determine correlation.
-
+# None of the Sales variables are normally distributed.
+# As the Pearson correlation only works on normally distributed variables,
+# the correlation of the Sales variables cannot be determined.
 
 ###############################################################################
 
@@ -245,13 +360,56 @@ qplot(Global_Sales, Platform, data=sales, geom='boxplot',
 # Create plots to gain insights into data.
 # Choose the type of plot you think best suits the data set and what you want 
 # to investigate. Explain your answer in your report.
+ggplot(data = sales,
+       mapping = aes(x = Product, y = Global_Sales, color = Platform)) +
+  geom_point(alpha = 1, size = 3) +
+  labs(title = "Global Sales per Product",
+       x = "Product Code",
+       y = "Global Sales (£m)") +
+  
+  # Add a theme layer. 
+  theme_bw() +
+  scale_fill_brewer('set2')
 
+ggplot(sales2, aes(x = sum_Global_Sales)) +
+  # Add fill colour to the function.
+  geom_density(fill = 'red') + 
+  # Specify the title.
+  labs(title = "Distribution of Global Sales", 
+       x = "Global Sales (£m)", 
+       y = "Density")
+
+ggplot(sales, aes(x = Global_Sales, y = Platform)) +
+  # Specify the geom_violin function and fill.
+  geom_violin(fill = 'blue') +  
+  # Specify the geom_boxplot.
+  geom_boxplot(fill = 'orange', width = 0.25,
+               outlier.color = 'orange', outlier.size = 1,
+               outlier.shape = 'square')  
 
 ###############################################################################
 
 # 5. Observations and insights
 # Your observations and insights here...
 
+# The Q-Q plots and Shapiro-Wilk tests of the Sales variables confirm that these
+# variables aren't normally distributed. The skewness() & kurtosis() results
+# reveal that the Sales variables are extremely positively skewed and 
+# heavy-tailed. Under section 4 above, I employed a KDP of Global Sales
+# to confirm these findings. As these variables are non-normal, 
+# correlation between them cannot be determined.
+
+# I utilised ggplot() to generate improved versions of the visualisations
+# discussed in Week 4 (see section 2b above). These confirmed my previous
+# insights that the highest-selling Products are those with low Product Codes;
+# the most popular Platforms are the Xbox 360, PS3 & PC; and that the Wii has
+# several extremely positive outliers in terms of Global Sales.
+
+# I utilised a multivariate scatterplot to inform Turtle Games which Platforms
+# the highest selling Products globally belong to. The highest-selling
+# Product was on the Wii. I also generated a violin plot of Global Sales
+# per Platform to inform Turtle Games of both the summary statistics and
+# distribution of Sales per Platform. 
 
 
 ###############################################################################
