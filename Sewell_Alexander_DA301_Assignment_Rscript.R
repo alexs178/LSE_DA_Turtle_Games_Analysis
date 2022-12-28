@@ -1,52 +1,9 @@
 ## LSE Data Analytics Online Career Accelerator 
-
 # DA301:  Advanced Analytics for Organisational Impact
-
-###############################################################################
-
-# Assignment template
-
-## Scenario
-## You are a data analyst working for Turtle Games, a game manufacturer and 
-## retailer. They manufacture and sell their own products, along with sourcing
-## and selling products manufactured by other companies. Their product range 
-## includes books, board games, video games and toys. They have a global 
-## customer base and have a business objective of improving overall sales 
-##performance by utilising customer trends. 
-
-## In particular, Turtle Games wants to understand:
-## - how customers accumulate loyalty points (Week 1)
-## - how useful are remuneration and spending scores data (Week 2)
-## - can social data (e.g. customer reviews) be used in marketing 
-##     campaigns (Week 3)
-## - what is the impact on sales per product (Week 4)
-## - the reliability of the data (e.g. normal distribution, Skewness, Kurtosis)
-##     (Week 5)
-## - if there is any possible relationship(s) in sales between North America,
-##     Europe, and global sales (Week 6).
 
 ################################################################################
 
-# Week 4 assignment: EDA using R
-
-## The sales department of Turtle games prefers R to Python. As you can perform
-## data analysis in R, you will explore and prepare the data set for analysis by
-## utilising basic statistics and plots. Note that you will use this data set 
-## in future modules as well and it is, therefore, strongly encouraged to first
-## clean the data as per provided guidelines and then save a copy of the clean 
-## data for future use.
-
-# Instructions
-# 1. Load and explore the data.
-##  - Remove redundant columns (Ranking, Year, Genre, Publisher) by creating 
-##      a subset of the data frame.
-##  - Create a summary of the new data frame.
-# 2. Create plots to review and determine insights into data set.
-##  - Create scatterplots, histograms and boxplots to gain insights into
-##      the Sales data.
-##  - Note your observations and diagrams that could be used to provide
-##      insights to the business.
-# 3. Include your insights and observations.
+# Part 4: EDA using R
 
 ###############################################################################
 
@@ -75,7 +32,7 @@ summary(sales)
 # 2. Review plots to determine insights into the data set.
 
 ## 2a) Scatterplots
-# Create scatterplots.
+# Create scatterplots of Product Code against Sales.
 qplot(Product, NA_Sales, data=sales, geom=c('point', 'smooth'), 
       main='North American Sales per Product', xlab='Product Code', 
       ylab='North American Sales (£m)')
@@ -87,9 +44,11 @@ qplot(Product, Global_Sales, data=sales, geom=c('point', 'smooth'),
       ylab='Global Sales (£m)')
 
 ## 2b) Histograms
-# Create histograms.
+# Create a histogram of Products per Platform.
 qplot(Platform, data=sales, main='Number of Products per Platform', 
       xlab='Platform', ylab='Number of Products')
+
+# Create histograms of each Sales variable.
 qplot(NA_Sales, data=sales, main='Distribution of North American Sales', 
       xlab='North American Sales (£m)', ylab='Number of Products')
 qplot(EU_Sales, data=sales, main='Distribution of European Sales', 
@@ -98,7 +57,7 @@ qplot(Global_Sales, data=sales, main='Distribution of Global Sales',
       xlab='Global Sales (£m)', ylab='Number of Products')
 
 ## 2c) Boxplots
-# Create boxplots.
+# Create boxplots to determine summary statistics of Sales per Platform.
 qplot(NA_Sales, Platform, data=sales, geom='boxplot', 
       main='Distribution of North American Sales per Platform', 
       xlab='North American Sales (£m)', ylab='Platform')
@@ -140,47 +99,17 @@ qplot(Global_Sales, Platform, data=sales, geom='boxplot',
 ###############################################################################
 
 
-# Week 5 assignment: Cleaning and maniulating data using R
+# Part 5: Cleaning and manipulating data using R
 
-## Utilising R, you will explore, prepare and explain the normality of the data
-## set based on plots, Skewness, Kurtosis, and a Shapiro-Wilk test. Note that
-## you will use this data set in future modules as well and it is, therefore, 
-## strongly encouraged to first clean the data as per provided guidelines and 
-## then save a copy of the clean data for future use.
-
-## Instructions
-# 1. Load and explore the data.
-##  - Continue to use the data frame that you prepared in the Week 4 assignment. 
-##  - View the data frame to sense-check the data set.
-##  - Determine the `min`, `max` and `mean` values of all the sales data.
-##  - Create a summary of the data frame.
-# 2. Determine the impact on sales per product_id.
-##  - Use the group_by and aggregate functions to sum the values grouped by
-##      product.
-##  - Create a summary of the new data frame.
-# 3. Create plots to review and determine insights into the data set.
-##  - Create scatterplots, histograms, and boxplots to gain insights into 
-##     the Sales data.
-##  - Note your observations and diagrams that could be used to provide 
-##     insights to the business.
-# 4. Determine the normality of the data set.
-##  - Create and explore Q-Q plots for all sales data.
-##  - Perform a Shapiro-Wilk test on all the sales data.
-##  - Determine the Skewness and Kurtosis of all the sales data.
-##  - Determine if there is any correlation between the sales data columns.
-# 5. Create plots to gain insights into the sales data.
-##  - Compare all the sales data (columns) for any correlation(s).
-##  - Add a trend line to the plots for ease of interpretation.
-# 6. Include your insights and observations.
 
 ################################################################################
 
 # 1. Load and explore the data
 
-# View data frame created in Week 4.
+# View data frame created in Part 4.
 View(sales)
 
-# Check output: Determine the min, max, and mean values.
+# Check output: Determine the min, max, and mean values for each Sales variable.
 apply(select(sales, NA_Sales, EU_Sales, Global_Sales), 2, min)
 apply(select(sales, NA_Sales, EU_Sales, Global_Sales), 2, max)
 apply(select(sales, NA_Sales, EU_Sales, Global_Sales), 2, mean)
@@ -192,13 +121,14 @@ summary(sales)
 
 # 2. Determine the impact on sales per product_id.
 
-## 2a) Use the group_by and aggregate functions.
-# Group data based on Product and determine the sum per Product.
+## 2a) Use the group_by and summarise functions.
+# Group data based on Product and determine the Sales sum per Product.
 sales2 <- sales %>% group_by(Product) %>% 
   summarise(sum_NA_Sales=sum(NA_Sales), 
             sum_EU_Sales=sum(EU_Sales), 
             sum_Global_Sales=sum(Global_Sales), 
             .groups='drop')
+
 # View the data frame.
 View(sales2)
 
@@ -207,7 +137,7 @@ summary(sales2)
 
 
 ## 2b) Determine which plot is the best to compare game sales.
-# Create scatterplots.
+# Create scatterplots of Product Code against summated Sales.
 ggplot(data = sales2,
        mapping = aes(x = Product, y = sum_NA_Sales)) +
   geom_point(alpha = 0.5, size = 1.5) +
@@ -241,31 +171,32 @@ ggplot(data = sales2,
   # Add a theme layer. 
   theme_bw()
 
-# Create histograms.
+# Create histograms of each summated Sales variable.
 ggplot(sales2, aes(x = sum_NA_Sales)) +
-  # Add fill, colour, and a statistic.
+  # Add fill, colour, and bin number.
   geom_histogram(fill = 'red', color = 'black', bins=20) + 
   # Add the labs function for labels.
   labs(x = "North American Sales (£m)",
        y = "Number of Products",
-       title = "Distribution of North American Sales") 
+       title = "Distribution of North American Sales per Product") 
 
 ggplot(sales2, aes(x = sum_EU_Sales)) +
-  # Add fill, colour, and a statistic.
+  # Add fill, colour, and bin number.
   geom_histogram(fill = 'blue', color = 'black', bins=20) + 
   # Add the labs function for labels.
   labs(x = "European Sales (£m)",
        y = "Number of Products",
-       title = "Distribution of European Sales") 
+       title = "Distribution of European Sales per Product") 
 
 ggplot(sales2, aes(x = sum_Global_Sales)) +
-  # Add fill, colour, and a statistic.
+  # Add fill, colour, and bin number.
   geom_histogram(fill = 'green', color = 'black', bins=20) + 
   # Add the labs function for labels.
   labs(x = "Global Sales (£m)",
        y = "Number of Products",
-       title = "Distribution of Global Sales") 
+       title = "Distribution of Global Sales per Product") 
 
+# Create a histogram of Products per Platform in terms of percentages.
 ggplot(sales,
        # Specify 'y' to create a percentage. 
        aes(x = Platform, y = ..count../sum(..count..))) +  
@@ -280,7 +211,7 @@ ggplot(sales,
   # Flip the x-axis and y-axis.
   coord_flip()  
 
-# Create boxplots.
+# Create boxplots that visualise summary statistics of Sales per Platform.
 ggplot(sales, aes(x = NA_Sales, y = Platform)) +
   # Specify the geom_boxplot function.
   geom_boxplot(fill = 'red', outlier.color = 'red') +
@@ -316,8 +247,7 @@ ggplot(sales, aes(x = Global_Sales, y = Platform)) +
 
 # 3. Determine the normality of the data set.
 
-## 3a) Create Q-Q Plots
-# Create Q-Q Plots.
+## 3a) Create Q-Q Plots of each summated Sales variable
 qqnorm(sales2$sum_NA_Sales)
 qqline(sales2$sum_NA_Sales)
 
@@ -327,17 +257,16 @@ qqline(sales2$sum_EU_Sales)
 qqnorm(sales2$sum_Global_Sales)
 qqline(sales2$sum_Global_Sales)
 
-## 3b) Perform Shapiro-Wilk test
+## 3b) Perform Shapiro-Wilk test.
 # Install and import Moments.
 library(moments)
 
-# Perform Shapiro-Wilk test.
+# Perform Shapiro-Wilk test on each summated Sales variable.
 shapiro.test(sales2$sum_NA_Sales)
 shapiro.test(sales2$sum_EU_Sales)
 shapiro.test(sales2$sum_Global_Sales)
 
-## 3c) Determine Skewness and Kurtosis
-# Skewness and Kurtosis.
+## 3c) Determine Skewness and Kurtosis on each summated Sales variable.
 skewness(sales2$sum_NA_Sales)
 kurtosis(sales2$sum_NA_Sales)
 
@@ -349,7 +278,7 @@ kurtosis(sales2$sum_Global_Sales)
 
 
 ## 3d) Determine correlation
-# Determine correlation.
+
 # None of the Sales variables are normally distributed.
 # As the Pearson correlation only works on normally distributed variables,
 # the correlation of the Sales variables cannot be determined.
@@ -358,8 +287,8 @@ kurtosis(sales2$sum_Global_Sales)
 
 # 4. Plot the data
 # Create plots to gain insights into data.
-# Choose the type of plot you think best suits the data set and what you want 
-# to investigate. Explain your answer in your report.
+
+# Create a multivariate scatterplot of Global Sales by Product and Platform.
 ggplot(data = sales,
        mapping = aes(x = Product, y = Global_Sales, color = Platform)) +
   geom_point(alpha = 1, size = 3) +
@@ -371,6 +300,7 @@ ggplot(data = sales,
   theme_bw() +
   scale_fill_brewer('set2')
 
+# Create a KDP of summated Global Sales.
 ggplot(sales2, aes(x = sum_Global_Sales)) +
   # Add fill colour to the function.
   geom_density(fill = 'red') + 
@@ -379,13 +309,21 @@ ggplot(sales2, aes(x = sum_Global_Sales)) +
        x = "Global Sales (£m)", 
        y = "Density")
 
-ggplot(sales, aes(x = Global_Sales, y = Platform)) +
+# Create a violin plot showing the summary statistics and distribution of
+# Global Sales amongst the 5 most popular Platforms.
+ggplot(subset(sales, Platform=='PC' | Platform=='PS3' | Platform=='X360' | 
+                Platform=='Wii' | Platform=='DS'), 
+       aes(x = Global_Sales, y = Platform)) +
   # Specify the geom_violin function and fill.
   geom_violin(fill = 'blue') +  
   # Specify the geom_boxplot.
   geom_boxplot(fill = 'orange', width = 0.25,
                outlier.color = 'orange', outlier.size = 1,
-               outlier.shape = 'square')  
+               outlier.shape = 'square') +
+  # Specify the title.
+  labs(title = "Distribution of Global Sales for the 5 top Platforms", 
+       x = "Global Sales (£m)", 
+       y = "Platform")
 
 ###############################################################################
 
@@ -400,7 +338,7 @@ ggplot(sales, aes(x = Global_Sales, y = Platform)) +
 # correlation between them cannot be determined.
 
 # I utilised ggplot() to generate improved versions of the visualisations
-# discussed in Week 4 (see section 2b above). These confirmed my previous
+# discussed in Part 4 (see section 2b above). These confirmed my previous
 # insights that the highest-selling Products are those with low Product Codes;
 # the most popular Platforms are the Xbox 360, PS3 & PC; and that the Wii has
 # several extremely positive outliers in terms of Global Sales.
@@ -408,89 +346,123 @@ ggplot(sales, aes(x = Global_Sales, y = Platform)) +
 # I utilised a multivariate scatterplot to inform Turtle Games which Platforms
 # the highest selling Products globally belong to. The highest-selling
 # Product was on the Wii. I also generated a violin plot of Global Sales
-# per Platform to inform Turtle Games of both the summary statistics and
-# distribution of Sales per Platform. 
+# per the 5 most popular Platform to inform Turtle Games of both the 
+# summary statistics and distribution of Sales for the 5 top Platforms they
+# should target. 
 
 
 ###############################################################################
 ###############################################################################
 
-# Week 6 assignment: Making recommendations to the business using R
-
-## The sales department wants to better understand if there is any relationship
-## between North America, Europe, and global sales. Therefore, you need to
-## investigate any possible relationship(s) in the sales data by creating a 
-## simple and multiple linear regression model. Based on the models and your
-## previous analysis (Weeks 1-5), you will then provide recommendations to 
-## Turtle Games based on:
-##   - Do you have confidence in the models based on goodness of fit and
-##        accuracy of predictions?
-##   - What would your suggestions and recommendations be to the business?
-##   - If needed, how would you improve the model(s)?
-##   - Explain your answers.
-
-# Instructions
-# 1. Load and explore the data.
-##  - Continue to use the data frame that you prepared in the Week 5 assignment. 
-# 2. Create a simple linear regression model.
-##  - Determine the correlation between the sales columns.
-##  - View the output.
-##  - Create plots to view the linear regression.
-# 3. Create a multiple linear regression model
-##  - Select only the numeric columns.
-##  - Determine the correlation between the sales columns.
-##  - View the output.
-# 4. Predict global sales based on provided values. Compare your prediction to
-#      the observed value(s).
-##  - NA_Sales_sum of 34.02 and EU_Sales_sum of 23.80.
-##  - NA_Sales_sum of 3.93 and EU_Sales_sum of 1.56.
-##  - NA_Sales_sum of 2.73 and EU_Sales_sum of 0.65.
-##  - NA_Sales_sum of 2.26 and EU_Sales_sum of 0.97.
-##  - NA_Sales_sum of 22.08 and EU_Sales_sum of 0.52.
-# 5. Include your insights and observations.
+# Part 6: Making recommendations to the business using R
 
 ###############################################################################
 
-# 1. Load and explor the data
-# View data frame created in Week 5.
-
+# 1. Load and explore the data
+# View aggregated data frame created in Part 5.
+View(sales2)
 
 # Determine a summary of the data frame.
-
+summary(sales2)
 
 ###############################################################################
 
 # 2. Create a simple linear regression model
 ## 2a) Determine the correlation between columns
-# Create a linear regression model on the original data.
+cor(select(sales2, -Product))
+# Create linear regression models of summated Global Sales against the other
+# summated Sales variables.
+model1 <- lm(sum_Global_Sales~sum_NA_Sales,
+             data=sales2)
+summary(model1)
 
+model2 <- lm(sum_Global_Sales~sum_EU_Sales,
+          data=sales2)
+summary(model2)
 
 
 ## 2b) Create a plot (simple linear regression)
-# Basic visualisation.
+# Basic visualisations of both linear regression models.
+plot(sales2$sum_NA_Sales, sales2$sum_Global_Sales)
+abline(coefficients(model1))
 
+plot(sales2$sum_EU_Sales, sales2$sum_Global_Sales)
+abline(coefficients(model2))
 
 ###############################################################################
 
 # 3. Create a multiple linear regression model
-# Select only numeric columns from the original data frame.
-
-
-# Multiple linear regression model.
-
+# Select only numeric columns from the aggregated data frame.
+# Create a multiple linear regression model.
+modela = lm(sum_Global_Sales~sum_NA_Sales+sum_EU_Sales, data=sales2)
+summary(modela)
 
 ###############################################################################
 
 # 4. Predictions based on given values
 # Compare with observed values for a number of records.
 
+# Create a vector to store the test North American sales values.
+sum_NA_Sales <- c(34.02, 3.93, 2.73, 2.26, 22.08) 
 
+# Create a vector to store the test European sales values.
+sum_EU_Sales <- c(23.80, 1.56, 0.65, 0.97, 0.52)
+
+# Create a DataFrame to store both vectors.
+testdata <- data.frame(sum_NA_Sales, sum_EU_Sales)
+
+#View the DataFrame.
+testdata
+
+# Generate predicted values based on the test values using the multiple linear
+# regression model.
+predictTest = predict(modela, newdata=testdata, 
+                      interval='confidence')
+
+# View the predicted values.
+predictTest
+
+# View the aggregated DataFrame to determine if the multiple linear regression
+# model is accurate.
+View(sales2)
 
 ###############################################################################
 
 # 5. Observations and insights
 # Your observations and insights here...
 
+# The correlation matrix of the sales per product variables indicates that 
+# North American Sales per Product is more strongly correlated with Global
+# Sales per Product than European Sales per Product. 
+
+# I created 2 simple linear regression models: one to determine the effect of
+# North American Sales per Product on Global Sales per Product, and the other
+# to determine the effect of European Sales per Product on Global Sales per
+# Product. In both models, the independent variable's coefficient was positive
+# and extremely statistically significant. This is confirmed by the
+# visualisations of Global Sales per Product against both independent variables.
+# Interestingly, the coefficient for European Sales was stronger than the 
+# coefficient for North American Sales, in contrast to the results from the 
+# correlation matrix.
+
+#I then utilised a multiple linear regression model to determine the effect of 
+# sum_NA_Sales & sum_EU_Sales on sum_Global_Sales. As expected, the coefficients 
+# on sum_NA_Sales & sum_EU_Sales were both extremely statistically significant 
+# and positive. Interestingly, sum_EU_Sales had a larger coefficient (1.20) than 
+# sum_NA_Sales (1.13), suggesting Turtle Games should slightly prioritise Europe 
+# to improve Sales. While prior analysis has indicated that the Sales variables 
+# are non-normal and very positively skewed, the t-tests utilised should be 
+# robust against this non-normality. 
+
+# The R-squared and adjusted R-squared values for the multiple linear regression
+# model were very strong at around 97%, which were higher than in both simple 
+# linear regression models. I also predicted global sales based on provided
+# values to test model accuracy. The actual Global Sales for Test Case 1 
+# (£67.85m) fell within the Confidence Interval, but actual Global Sales for 
+# Test Case 5 (£23.21m) didn’t fall within the Confidence Interval despite 
+# being only £3m off the predicted value. Overall, this multiple linear 
+# regression model is a decent predictor of Global Sales, but can be improved by
+# adding in more numerical variables such as review scores.
 
 
 ###############################################################################
